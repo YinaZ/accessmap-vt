@@ -44,34 +44,13 @@ function updateTiles(cb) {
   var JSONStream = require('JSONStream');
 
   var tiles = {
-    pedestrian: {
-      sidewalks: `
+    routing: {
+      routing_info: `
       (SELECT array_to_json(array_agg(f))
          FROM (SELECT 'Feature' as type,
                       ST_AsGeoJSON(geom)::json as geometry,
                       json_build_object('grade', grade) AS properties
-                 FROM sidewalks) f)`,
-      crossings: `
-      (SELECT array_to_json(array_agg(f))
-         FROM (SELECT 'Feature' as type,
-                      ST_AsGeoJSON(geom)::json as geometry,
-                      json_build_object('grade', grade,
-                                        'curbramps', curbramps) AS properties
-                 FROM crossings) f)`
-    },
-    live: {
-      construction: `
-      (SELECT array_to_json(array_agg(f))
-         FROM (SELECT 'Feature' as type,
-                      ST_AsGeoJSON(geom)::json as geometry,
-                      json_build_object('address', address,
-                                        'permit_number', permit_number,
-                                        'start_date', to_char(start_date, 'YYYY-MM-DD'),
-                                        'end_date', to_char(end_date, 'YYYY-MM-DD'),
-                                        'closed', closed) AS properties
-                 FROM construction
-                WHERE start_date <= current_timestamp
-                  AND end_date >= current_timestamp) f)`
+                 FROM routing_info) f)`
     }
   };
 

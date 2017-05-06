@@ -56,7 +56,7 @@ updateTiles(function(err) {
   if (err) {
     throw 'Failed to build mbtiles';
   }
-  var layers = ['live', 'pedestrian'];
+  var layers = ['routing'];
   for (var i = 0; i < layers.length; i++) {
     tilelive.load(config[layers[i]], function(err, source) {
       sources[layers[i]] = source;
