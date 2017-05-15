@@ -8,7 +8,8 @@ var Tippecanoe = require('./tippecanoe');
 
 
 var tippecanoe = new Tippecanoe({
-  maxzoom: 22,
+  maxzoom: 17,
+  minzoom: 12,
   force: true,
   docker: true
 });
@@ -46,11 +47,10 @@ function updateTiles(cb) {
   var tiles = {
     routing: {
       routing_info: `
-      (SELECT array_to_json(array_agg(f))
-         FROM (SELECT 'Feature' as type,
-                      ST_AsGeoJSON(geom)::json as geometry,
-                      json_build_object('grade', grade) AS properties
-                 FROM routing_info) f)`
+        SELECT 'Feature' as type,
+               ST_AsGeoJSON(ST_Transform(geom, 4326), 7)::json geometry,
+               json_build_object('grade', grade) properties
+          FROM routing_info`
     }
   };
 
@@ -66,7 +66,15 @@ function updateTiles(cb) {
                                  './data/overlay',
                                   layerName + '.geojson');
         let handle = fs.createWriteStream(filePath);
-        s.pipe(JSONStream.stringify()).pipe(handle);
+        handle.on('open', fd => {
+          handle.write('{"type": "FeatureCollection",');
+          handle.write(' "features": ');
+          s.pipe(JSONStream.stringify()).pipe(handle, {'end': false });
+          s.on('end', () => {
+            handle.write('}');
+            handle.end();
+          });
+        });
       });
       promises.push(stream);
     }
