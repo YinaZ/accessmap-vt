@@ -1,4 +1,3 @@
 {
-  "pedestrian" : "mbtiles://./data/mbtiles/pedestrian.mbtiles",
-  "live" : "mbtiles://./data/mbtiles/live.mbtiles"
+  "routing" : "mbtiles://./data/mbtiles/routing.mbtiles"
 }
