@@ -15,7 +15,7 @@ var tippecanoe = new Tippecanoe({
 });
 
 function makeMbtiles(name, paths, cb) {
-  console.log('Building tiles...');
+  console.log('Building ' + name + ' tiles...');
   mbtilesName = name + '.mbtiles';
   tippecanoe.run(paths, path.join('build/mbtiles', mbtilesName), e => {
     if (e) {
@@ -33,7 +33,7 @@ function makeMbtiles(name, paths, cb) {
   });
 }
 
-function updateTiles(cb) {
+function updateTiles(tilesSQL, cb) {
   console.log('Extracting layers from database...');
   // connect to database, write geojson file
   var db = pgp(process.env.DATABASE_URL);
@@ -44,18 +44,8 @@ function updateTiles(cb) {
   var QueryStream = require('pg-query-stream');
   var JSONStream = require('JSONStream');
 
-  var tiles = {
-    routing: {
-      routing_info: `
-        SELECT 'Feature' as type,
-               ST_AsGeoJSON(ST_Transform(geom, 4326), 7)::json geometry,
-               json_build_object('grade', grade) properties
-          FROM routing_info`
-    }
-  };
-
-  for (let tileName of Object.keys(tiles)) {
-    let layers = tiles[tileName];
+  for (let tileName of Object.keys(tilesSQL)) {
+    let layers = tilesSQL[tileName];
     let promises = [];
 
     for (let layerName of Object.keys(layers)) {

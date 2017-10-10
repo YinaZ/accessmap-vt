@@ -1,6 +1,7 @@
 /node_modules/*
 npm_debug.log
 npm-debug.log
+yarn-*.log
 .idea
 ./*.log
 
@@ -10,3 +11,6 @@ set_envs.sh
 *.mbtiles
 
 build/mbtiles/*
+
+sources.json
+config.json

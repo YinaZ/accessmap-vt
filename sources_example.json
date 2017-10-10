@@ -1,0 +1,9 @@
+{
+  "routing": {
+    "routing_info": [
+        "SELECT 'Feature' as type,",
+        "       ST_AsGeoJSON(ST_Transform(geom, 4326), 7)::json geometry,",
+        "       json_build_object('grade', grade) properties",
+        "  FROM routing_info`"]
+  }
+}
